@@ -32,6 +32,9 @@ from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.openai.llm import OpenAILLMService
 from pipecat.transports.base_transport import BaseTransport, TransportParams
 from pipecat.transports.daily.transport import DailyParams
+from pipecat.processors.frameworks.strands_agents import StrandsAgentsProcessor
+from strands import Agent,tool
+from strands.models.litellm import LiteLLMModel
 
 logger.info("✅ All components loaded successfully!")
 
@@ -48,7 +51,28 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
         voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
     )
 
-    llm = OpenAILLMService(api_key=os.getenv("OPENAI_API_KEY"))
+    model = LiteLLMModel(
+        client_args={
+            "api_key":os.getenv('OPENROUTER_API_KEY'),
+        },
+        model_id="openrouter/openai/gpt-4o-mini",
+        # model_id="openrouter/google/gemini-2.0-flash-lite-001",
+        # model_id="openrouter/google/gemini-2.0-flash-exp:free",
+        # model_id="openrouter/google/gemini-2.0-flash-001",
+        # model_id="openrouter/google/gemini-2.5-pro",
+        params={
+            'temperature':0.5,
+            "max_tokens":1000
+        },
+    )
+
+    agent = Agent(
+        model=model,
+        tools=[add_note, end_call],
+        system_prompt=agent_prompt
+    )
+
+    llm = StrandsAgentsProcessor(agent=agent)
 
     messages = [
         {
