@@ -51,6 +51,9 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
         voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
     )
 
+    with open("backend/prompts/agent.md", "r", encoding="utf-8") as f:
+        agent_prompt = f.read()
+
     model = LiteLLMModel(
         client_args={
             "api_key":os.getenv('OPENROUTER_API_KEY'),
@@ -68,7 +71,7 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
 
     agent = Agent(
         model=model,
-        tools=[add_note, end_call],
+        tools=[],
         system_prompt=agent_prompt
     )
 
@@ -77,7 +80,7 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
     messages = [
         {
             "role": "system",
-            "content": "You are a friendly AI assistant. Respond naturally and keep your answers conversational.",
+            "content": "You are onboarding voice AI agent whos job is to onboard new patients for psychologist (Dr. Dolcy Dhar)",
         },
     ]
 
@@ -112,7 +115,7 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
     async def on_client_connected(transport, client):
         logger.info(f"Client connected")
         # Kick off the conversation.
-        messages.append({"role": "system", "content": "Say hello and briefly introduce yourself."})
+        messages.append({"role": "system", "content": "Introduce yourself by saying 'Hey I am steve from PsychSuite care i am here to help you with your onboarding' and interact further according to the workflow"})
         await task.queue_frames([LLMRunFrame()])
 
     @transport.event_handler("on_client_disconnected")
