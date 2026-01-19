@@ -51,7 +51,7 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
         voice_id="71a7ad14-091c-4e8e-a314-022ece01c121",  # British Reading Lady
     )
 
-    with open("backend/prompts/agent.md", "r", encoding="utf-8") as f:
+    with open("prompts/agent.md", "r", encoding="utf-8") as f:
         agent_prompt = f.read()
 
     model = LiteLLMModel(

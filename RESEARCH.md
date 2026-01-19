@@ -19,6 +19,7 @@ Pipecat provides comprehensive frontend SDKs for building voice and multimodal A
 npm install @pipecat-ai/client-js
 npm install @pipecat-ai/client-react
 npm install @pipecat-ai/daily-transport
+npm install @pipecat-ai/small-webrtc-transport
 ```
 
 ## Basic React Integration
